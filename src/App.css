@@ -1,20 +1,18 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+  background-color: #282c34;
+  padding: 2vw;
 }
 
 .App-header {
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -24,15 +22,70 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.App-title {
+  font-weight: 300;
+  font-size: 28px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.person-container {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 20px;
+  column-gap: 20px;
+  align-items: start;
+  margin-top: 3vh;
+  justify-content: center;
+}
+
+.person {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 8px 12px;
+  flex-grow: 1;
+}
+
+.person p {
+  font-size: 13px;
+}
+
+.person-name {
+  font-weight: 600;
+  font-size: 15px !important;
+}
+
+.person-author {
+  font-weight: 200;
+  margin-top: 1px;
+}
+
+.person-publishedon {
+  margin-top: 5px;
+}
+
+.addperson-form {
+  display: flex;
+  gap: 15px;
+  margin-top: 3vh;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.addperson-form input,
+.addperson-form select {
+  background-color: transparent;
+  outline: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 4px 12px;
+  color: #fff;
+}
+
+.addperson-form input[type="date"] {
+  color: grey;
+}
+
+.addperson-form input::-webkit-calendar-picker-indicator {
+  filter: invert(40%);
 }
