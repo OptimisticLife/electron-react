@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 function App() {
   const [persons, setPersons] = useState([]);
+  const navigate = useNavigate();
   useEffect(function () {
-    console.log("Electron window..", window.api.greetings("Hello from React"));
-
     async function getPersonData() {
       const personData = await window.api.getPersonData();
       const parsedData = await JSON.parse(personData);
@@ -15,16 +15,45 @@ function App() {
     getPersonData();
   }, []);
 
-  function personHandlerMain(person) {
-    console.log("After update:", window.api.addPersonData(person));
+  async function personHandlerMain(person) {
+    const updatedPersonData = await window.api.addPersonData(person);
+    setPersons(updatedPersonData);
+  }
+
+  async function generatePdfHandler() {
+    navigate("/table-view");
+    let response = await window.api.generatePdf(
+      "http://localhost:3000/table-view"
+    );
+    console.log("*** pdf", response);
   }
 
   return (
     <div className="App">
       <header className="App-header">
         <p className="App-title">React - Electron App.</p>
-        <AddPerson personHandlerMain={personHandlerMain} />
-        <PersonContainer persons={persons} />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <AddPerson
+                  generatePdfHandler={generatePdfHandler}
+                  personHandlerMain={personHandlerMain}
+                />
+                <PersonContainer persons={persons} />
+              </>
+            }
+          />
+          <Route
+            path="/table-view"
+            element={
+              <>
+                <PersonTableView persons={persons} />
+              </>
+            }
+          />
+        </Routes>
       </header>
     </div>
   );
@@ -47,23 +76,29 @@ function PersonContainer({ persons }) {
   );
 }
 
-// function PersonContainer({ persons }) {
-//   return (
-//     <div className="person-container">
-//       {persons.length > 0 &&
-//         persons?.map(({ name, author, publishedOn}, index) => {
-//           return (
-//             <div className="person" key={index}>
-//               <p className="person-name">{name}</p>
-//               <p className="person-author">Author: {author}</p>
-//               <p className="person-publishedon">Published On : {publishedOn}</p>
-//             </div>
-//           );
-//         })}
-//     </div>
-//   );
-// }
-function AddPerson({ personHandlerMain }) {
+function PersonTableView({ persons }) {
+  return (
+    <table className="person-table-container">
+      <tr>
+        <th>Name</th>
+        <th>Eye Color</th>
+        <th>Gender</th>
+      </tr>
+      {persons.length > 0 &&
+        persons?.map(({ name, eyeColor, gender, _id }) => {
+          return (
+            <tr className="table-person" key={_id}>
+              <td className="table-person-name">{name}</td>
+              <td className="table-person-author"> {eyeColor}</td>
+              <td className="table-person-publishedon">{gender}</td>
+            </tr>
+          );
+        })}
+    </table>
+  );
+}
+
+function AddPerson({ personHandlerMain, generatePdfHandler }) {
   const [name, setName] = useState("");
   const [eyeColor, setEyeColor] = useState("");
   const [gender, setGender] = useState("Male");
@@ -84,6 +119,7 @@ function AddPerson({ personHandlerMain }) {
       }, 1500);
     }
   }
+
   return (
     <div className="addperson-form">
       <input
@@ -100,12 +136,6 @@ function AddPerson({ personHandlerMain }) {
         className="author"
         placeholder="Eye Color"
       />
-      {/* <input
-        type="date"
-        value={gender}
-        onChange={(e) => setGender(e.target.value)}
-        className="publishedon"
-      /> */}
 
       <select
         value={gender}
@@ -117,6 +147,7 @@ function AddPerson({ personHandlerMain }) {
       </select>
 
       <input type="button" value="Submit Person" onClick={personHandler} />
+      <input type="button" value="Generate PDF" onClick={generatePdfHandler} />
     </div>
   );
 }

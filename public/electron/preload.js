@@ -1,7 +1,7 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("api", {
-  greetings: (message) => ipcRenderer.send("greeting", message),
   getPersonData: () => ipcRenderer.invoke("getPersonData"),
-  addPersonData: (person) => ipcRenderer.send("addPersonData", person),
+  addPersonData: (person) => ipcRenderer.invoke("addPersonData", person),
+  generatePdf: (url) => ipcRenderer.invoke("generatePdf", url),
 });
